@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
+  body {
+    @apply text-calle-text-color bg-calle-bg-light dark:bg-calle-bg-dark antialiased;
+  }
+}
+
+@layer components {
+  .login-box {
+    @apply w-[100vw] h-[100vh];
+    background: url("/assets/callebg.png") #2f3142;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    display: grid;
+    place-items: center;
+  }
+
+  .login-form-box {
+    @apply border border-calle-bg-dark rounded py-8 px-4 backdrop-blur w-5/12;
+    background: rgba(47, 49, 66, 0.7);
+  }
+
+  .input-bg {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .topNav {
+    @apply absolute flex  w-full px-16  py-4 items-center justify-between shadow-sm top-0 left-0 z-10;
+    backdrop-filter: blur(0.1rem);
+  }
+
+  .userBtn {
+    @apply shadow-xl rounded-md p-2 cursor-pointer relative bg-white;
+    @apply before:absolute before:w-2 before:h-2 before:bg-green-600 before:rounded-full before:right-0 before:-top-1;
+  }
+
+  .homeContainer {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .homebg {
+    position: absolute;
+    inset: 0;
+    background: url("/assets/altbg1.png");
+    background-repeat: repeat;
+    background-size: contain;
+    mix-blend-mode: multiply;
+  }
+
+  .homeBodyBox {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    /* border: 2px solid red; */
+  }
+
+  .homeBodyInnerBox {
+    @apply w-4/12 h-auto bg-transparent rounded-md;
+    backdrop-filter: blur(0.1rem);
+  }
+
+  .primaryBtn {
+    @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-calle-btn-bg hover:bg-calle-btn-hoverBg cursor-pointer;
+    @apply active:scale-[1.02] transition-transform;
+  }
+
+  .greenBtn {
+    @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-green-500 hover:bg-green-400 cursor-pointer;
+    @apply active:scale-[1.02] transition-transform;
+  }
+
+  .controlBtn {
+    @apply outline-none shadow-xl rounded-xl p-5 cursor-pointer bg-transparent text-2xl text-center backdrop-blur-[1px] border border-white text-white;
+    @apply hover:scale-[1.02] transition-transform;
+  }
+}
