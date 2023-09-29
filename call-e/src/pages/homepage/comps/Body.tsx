@@ -2,10 +2,18 @@ import React from "react";
 import { MdVideocam } from "react-icons/md";
 import { BsMicFill } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
+import { useCalleContextValues } from "../../../contexApi/CalleContext";
+import { calleContextType } from "../../../contexApi/contextType";
 
 const Body = () => {
+  let value: calleContextType = useCalleContextValues();
+
+  const { testing } = value;
+
   return (
     <>
+      {console.log(testing)}
+
       <div className="homebg"></div>
       <section className="homeBodyBox">
         {/* container with blured background */}
