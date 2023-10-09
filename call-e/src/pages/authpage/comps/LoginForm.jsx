@@ -27,7 +27,7 @@ const LoginForm = () => {
                 <input
                   type="text"
                   name="email"
-                  className=" rounded p-3 input-bg w-full text-white"
+                  className=" rounded p-3 input-bg w-full"
                 />
               </div>
             </div>
@@ -42,7 +42,7 @@ const LoginForm = () => {
                 <input
                   type="password"
                   name="password"
-                  className=" rounded p-3 input-bg w-full text-white"
+                  className=" rounded p-3 input-bg w-full "
                 />
               </div>
             </div>

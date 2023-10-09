@@ -4,7 +4,8 @@ import TopNav from "./sharedComps/navigation/TopNav";
 function App() {
   return (
     <>
-      <main className="homeContainer">
+      <main className="Container">
+        <div className="mainbg"></div>
         <TopNav />
         <AppRoute />
       </main>
