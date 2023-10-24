@@ -1,22 +1,18 @@
 import { useState } from "react";
-import { MdVideocam, MdVideocamOff } from "react-icons/md";
-import { BsMicFill, BsMicMuteFill } from "react-icons/bs";
-import { IoSend } from "react-icons/io5";
+import {
+  PiMicrophoneFill,
+  PiMicrophoneSlashFill,
+  PiVideoCameraFill,
+  PiVideoCameraSlashFill,
+  PiPhoneFill,
+} from "react-icons/pi";
 import { useCalleContextValues } from "../../../contexApi/CalleContext";
 
 const Body = () => {
-  let { videoControl, setVideoControl, audioControl, setAudioControl } =
+  let { videoControl, audioControl, setCameraState, setAudioState } =
     useCalleContextValues();
 
   let [showField, setShowField] = useState(false);
-
-  const setCameraState = () => {
-    setVideoControl(!videoControl);
-  };
-
-  const setAudioState = () => {
-    setAudioControl(!audioControl);
-  };
 
   return (
     <>
@@ -34,11 +30,19 @@ const Body = () => {
             />
             <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center justify-center gap-8">
               <button className="controlBtn" onClick={setCameraState}>
-                {videoControl ? <MdVideocam /> : <MdVideocamOff />}
+                {videoControl ? (
+                  <PiVideoCameraSlashFill />
+                ) : (
+                  <PiVideoCameraFill />
+                )}
               </button>
 
               <button className="controlBtn" onClick={setAudioState}>
-                {audioControl ? <BsMicFill /> : <BsMicMuteFill />}
+                {audioControl ? (
+                  <PiMicrophoneSlashFill />
+                ) : (
+                  <PiMicrophoneFill />
+                )}
               </button>
             </div>
           </div>
@@ -50,10 +54,10 @@ const Body = () => {
               className="primaryBtn"
               onClick={() => setShowField(!showField)}
             >
-              <MdVideocam /> Join Meeting
+              <PiVideoCameraFill /> Join Meeting
             </button>
             <button className="greenBtn">
-              <MdVideocam /> New Meeting
+              <PiVideoCameraFill /> New Meeting
             </button>
           </div>
 
@@ -70,7 +74,7 @@ const Body = () => {
                   className="rounded p-3 bg-slate-200 outline-calle-btn-bg w-full text-calle-black"
                 />
                 <button className="primaryBtn">
-                  <IoSend />
+                  <PiPhoneFill />
                 </button>
               </div>
             </div>

@@ -63,17 +63,17 @@
 
   .primaryBtn {
     @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-calle-btn-bg hover:bg-calle-btn-hoverBg cursor-pointer;
-    @apply active:scale-[1.02] transition-transform;
+    @apply active:scale-[1.01] transition-transform;
   }
 
   .greenBtn {
     @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-green-500 hover:bg-green-400 cursor-pointer;
-    @apply active:scale-[1.02] transition-transform;
+    @apply active:scale-[1.01] transition-transform;
   }
 
   .controlBtn {
     @apply outline-none shadow-xl rounded-xl p-5 cursor-pointer bg-transparent text-2xl text-center backdrop-blur-[1px] border border-white text-white;
-    @apply hover:scale-[1.02] transition-transform;
+    @apply active:scale-[1.01] transition-transform;
   }
 
   .meetingGridBoxMain {
@@ -82,5 +82,33 @@
 
   .videoScreen {
     @apply rounded-lg bg-calle-bg-dark;
+  }
+
+  .controlBox {
+    @apply flex items-center justify-between border border-gray-300 w-1/2 px-4 py-4 bg-transparent rounded-lg shadow-xl backdrop-blur-[0.1rem];
+  }
+
+  .bottonControlBtn {
+    @apply outline-none p-4 rounded-xl text-2xl text-white cursor-pointer active:scale-[1.01] transition-transform;
+  }
+
+  .dropCallBtn {
+    @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-[#eb4132] hover:bg-[#d63384] cursor-pointer;
+    @apply active:scale-[1.01] transition-transform;
+  }
+
+  .bottonControlBtnBg {
+    background-color: rgba(47, 49, 66, 0.8);
+    transition: background-color 0.3s ease-in;
+  }
+
+  .audioVideoBg {
+    background-color: #eb4132;
+    transition: background-color 0.3s ease-in;
+  }
+
+  .participantBg {
+    background-color: rgb(79, 70, 229);
+    transition: background-color 0.3s ease-in;
   }
 }
