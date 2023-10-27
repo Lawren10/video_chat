@@ -24,10 +24,16 @@ const CalleContext = ({ children }) => {
   };
 
   const setParticipantState = () => {
+    if (showChat) {
+      setShowChat(!showChat);
+    }
     setParticipant(!participant);
   };
 
   const setShowChatState = () => {
+    if (participant) {
+      setParticipantState(!participant);
+    }
     setShowChat(!showChat);
   };
 

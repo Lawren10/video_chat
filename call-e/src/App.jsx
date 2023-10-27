@@ -1,6 +1,8 @@
 import AppRoute from "./appRoute";
 import TopNav from "./sharedComps/navigation/TopNav";
 import Controls from "./sharedComps/navigation/Controls";
+import Participants from "./sharedComps/sidebars/Participants";
+import Chat from "./sharedComps/sidebars/Chat";
 
 function App() {
   return (
@@ -10,6 +12,8 @@ function App() {
         <TopNav />
         <AppRoute />
         <Controls />
+        <Participants />
+        <Chat />
       </main>
     </>
   );

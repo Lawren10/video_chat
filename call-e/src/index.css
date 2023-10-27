@@ -37,6 +37,7 @@
     width: 100vw;
     height: 100vh;
     position: relative;
+    overflow-x: hidden;
   }
 
   .mainbg {
@@ -102,13 +103,36 @@
     transition: background-color 0.3s ease-in;
   }
 
-  .audioVideoBg {
+  .audioVideoBtnBg {
     background-color: #eb4132;
     transition: background-color 0.3s ease-in;
   }
 
-  .participantBg {
+  .participantBtnBg {
     background-color: rgb(79, 70, 229);
     transition: background-color 0.3s ease-in;
+  }
+
+  .SideBarBox {
+    @apply absolute top-20 right-4 w-[22%] p-4 h-3/4 rounded-xl bg-[rgba(255,255,255,0.8)] backdrop-blur-[0.1rem] shadow-xl;
+  }
+
+  .hideSideBar {
+    @apply translate-x-[110%];
+    transition: transform 500ms ease-out;
+  }
+
+  .showSideBar {
+    @apply translate-x-[0];
+    transition: transform 500ms ease-in;
+  }
+
+  .inviteBtn {
+    @apply rounded-md text-white text-center font-bold py-3 px-8 w-full shadow-lg outline-none border-none bg-calle-btn-bg hover:bg-calle-btn-hoverBg cursor-pointer;
+    @apply active:scale-[1.01] transition-transform;
+  }
+
+  .closeBarBtn {
+    @apply outline-none p-4 rounded-xl text-white cursor-pointer active:scale-[1.01] transition-transform bg-[#eb4132] shadow-md;
   }
 }

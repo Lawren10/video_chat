@@ -7,6 +7,7 @@ import {
   PiPhoneFill,
 } from "react-icons/pi";
 import { useCalleContextValues } from "../../../contexApi/CalleContext";
+import { Link } from "react-router-dom";
 
 const Body = () => {
   let { videoControl, audioControl, setCameraState, setAudioState } =
@@ -57,7 +58,7 @@ const Body = () => {
               <PiVideoCameraFill /> Join Meeting
             </button>
             <button className="greenBtn">
-              <PiVideoCameraFill /> New Meeting
+              <PiVideoCameraFill /> <Link to={"/meeting"}>New Meeting</Link>
             </button>
           </div>
 

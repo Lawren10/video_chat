@@ -40,17 +40,18 @@ const Controls = () => {
 
   return (
     <>
-      {console.log(location)}
+      {/* {console.log(location)} */}
       <section
         className={`absolute bottom-8 w-full grid place-items-center ${
           location !== "/meeting" ? "hidden" : "block"
         }`}
       >
+        {/* video control buttons */}
         <div className="controlBox">
           <div className="flex items-center gap-4">
             <button
               className={`bottonControlBtn ${
-                videoControl ? "audioVideoBg" : "bottonControlBtnBg"
+                videoControl ? "audioVideoBtnBg" : "bottonControlBtnBg"
               }`}
               onClick={setCameraState}
             >
@@ -62,7 +63,7 @@ const Controls = () => {
             </button>
             <button
               className={`bottonControlBtn ${
-                audioControl ? "audioVideoBg" : "bottonControlBtnBg"
+                audioControl ? "audioVideoBtnBg" : "bottonControlBtnBg"
               }`}
               onClick={setAudioState}
             >
@@ -70,6 +71,7 @@ const Controls = () => {
             </button>
           </div>
 
+          {/* call controls buttons */}
           <div className="flex items-center gap-4">
             <button className="dropCallBtn text-2xl">
               <PiPhoneSlashFill />
@@ -79,28 +81,32 @@ const Controls = () => {
             </button>
           </div>
 
+          {/* participants and chat controls buttons*/}
           <div className="flex items-center gap-4">
             <button
               className={`bottonControlBtn ${
-                raiseHand ? "participantBg" : "bottonControlBtnBg"
+                raiseHand ? "participantBtnBg" : "bottonControlBtnBg"
               }`}
               onClick={setRaiseHAndState}
+              title="Raise Hand"
             >
               <PiHandPalmFill />
             </button>
             <button
               className={`bottonControlBtn ${
-                participant ? "participantBg" : "bottonControlBtnBg"
+                participant ? "participantBtnBg" : "bottonControlBtnBg"
               }`}
               onClick={setParticipantState}
+              title="Show Participants"
             >
               <PiUsersFill />
             </button>
             <button
               className={`bottonControlBtn ${
-                showChat ? "participantBg" : "bottonControlBtnBg"
+                showChat ? "participantBtnBg" : "bottonControlBtnBg"
               }`}
               onClick={setShowChatState}
+              title="Show Chats"
             >
               <PiChatTeardropTextFill />
             </button>
