@@ -16,7 +16,5 @@ export const initPeerConnection = async () => {
  };
 
  const localPeer = new RTCPeerConnection(server);
- // const offer = await localPeer.createOffer();
- // await localPeer.setLocalDescription(offer);
  return localPeer;
 };

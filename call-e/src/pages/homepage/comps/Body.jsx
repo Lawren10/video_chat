@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useRef, useEffect } from "react";
 import {
  PiMicrophoneFill,
  PiMicrophoneSlashFill,
@@ -7,6 +8,7 @@ import {
  PiPhoneFill,
 } from "react-icons/pi";
 import { useCalleContextValues } from "../../../contexApi/CalleContext";
+import { getMediaStream } from "../../../utils/controls";
 
 // import { Link } from "react-router-dom";
 
@@ -18,13 +20,22 @@ const Body = () => {
   setAudioState,
   localPeerCredentials,
   calleSocket,
+  localMediaStream,
  } = useCalleContextValues();
 
  let [showField, setShowField] = useState(false);
+ let [showvideo, setShowVideo] = useState(false);
+ let videoRef = useRef();
 
  // create room function
  const createRoom = async () => {
   console.log("creating room");
+
+  localMediaStream.current.getTracks().forEach((mediaTrack) => {
+   console.log("adding tracks to peer");
+   console.log(mediaTrack);
+   localPeerCredentials.current.addTrack(mediaTrack, localMediaStream.current);
+  });
 
   const clientOffer = await localPeerCredentials.current.createOffer();
   console.log("client offer created");
@@ -34,11 +45,28 @@ const Body = () => {
   localPeerCredentials.current.onicecandidate = (e) => {
    if (e.candidate) {
     console.log("clent candidates", e.candidate);
-    calleSocket.emit("sendingIceCandidates", { iceCanditate: e.candidate });
+    calleSocket.emit("sendingClientIceCandidates", {
+     iceCanditate: e.candidate,
+    });
    } else {
     console.log("no candidates");
+    console.log(localPeerCredentials.current.connectionState);
    }
   };
+
+  localPeerCredentials.current.onTrack = (e) => {
+   console.log("from remote track", e);
+  };
+
+  localPeerCredentials.current.onconnectionstatechange = () => {
+   console.log("connection state changing");
+  };
+
+  calleSocket.on("sending stream", (stream) => {
+   stream.forEach((element) => {
+    console.log("track stream", element.id);
+   });
+  });
 
   let roomId = `name-id-${calleSocket.id}`;
 
@@ -55,9 +83,13 @@ const Body = () => {
   });
  };
 
- // useEffect(() => {
- //  console.log(localPeerCredentials.current);
- // }, [localPeerCredentials]);
+ useEffect(() => {
+  (async function () {
+   localMediaStream.current = await getMediaStream();
+   // videoRef.current.srcObject = localMediaStream.current;
+   // setShowVideo(true);
+  })();
+ }, []);
 
  return (
   <>
@@ -71,8 +103,17 @@ const Body = () => {
       <img
        src="/assets/videochat.jpg"
        alt="video chat image"
-       className="w-full h-full rounded-md object-cover mb-4"
+       className={`w-full h-full rounded-md object-cover mb-4 ${
+        showvideo ? "hidden" : "block"
+       }`}
       />
+
+      <video
+       autoPlay
+       className={`w-full h-full rounded-md ${showvideo ? "block" : "hidden"}`}
+       ref={videoRef}
+      />
+
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center justify-center gap-8">
        <button className="controlBtn" onClick={setCameraState}>
         {videoControl ? <PiVideoCameraSlashFill /> : <PiVideoCameraFill />}

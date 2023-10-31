@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useState, useEffect, useRef } from "react";
@@ -15,6 +16,7 @@ const CalleContext = ({ children }) => {
  let [showChat, setShowChat] = useState(false);
 
  let localPeerCredentials = useRef();
+ let localMediaStream = useRef();
  //  let peerSocketId = useRef();
 
  let [meetingVidNum, setMeetingVidNum] = useState(3);
@@ -43,9 +45,7 @@ const CalleContext = ({ children }) => {
 
  useEffect(() => {
   calleSocket.on("connect", async () => {
-   //  const peerDetails =
    localPeerCredentials.current = await initPeerConnection();
-
    console.log("connected");
   });
  }, []);
@@ -73,6 +73,7 @@ const CalleContext = ({ children }) => {
      setParticipantState,
      setShowChatState,
      localPeerCredentials,
+     localMediaStream,
      calleSocket,
     }}
    >
