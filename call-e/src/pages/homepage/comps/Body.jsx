@@ -34,8 +34,13 @@ const Body = () => {
   localMediaStream.current.getTracks().forEach((mediaTrack) => {
    console.log("adding tracks to peer");
    console.log(mediaTrack);
+   console.log("local meda track", localMediaStream.current);
    localPeerCredentials.current.addTrack(mediaTrack, localMediaStream.current);
   });
+
+  // localPeerCredentials.current.ontrack = (e) => {
+  //  console.log("event form clent ontrack", e);
+  // };
 
   const clientOffer = await localPeerCredentials.current.createOffer();
   console.log("client offer created");
@@ -70,16 +75,20 @@ const Body = () => {
 
   let roomId = `name-id-${calleSocket.id}`;
 
-  calleSocket.emit("createRoom", {
-   roomId: roomId,
-   clientOffer: clientOffer,
-  });
+  // calleSocket.emit("createRoom", {
+  //  roomId: roomId,
+  //  clientOffer: clientOffer,
+  // });
 
   calleSocket.on("getServerAnswer", async (serverAnswer) => {
    console.log("server answer", serverAnswer);
    const serverCredential = new RTCSessionDescription(serverAnswer);
    await localPeerCredentials.current.setRemoteDescription(serverCredential);
    console.log("server remote answer set");
+  });
+
+  calleSocket.on("stream", (stram) => {
+   console.log("from streamng", stram);
   });
  };
 
