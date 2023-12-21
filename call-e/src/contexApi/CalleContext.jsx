@@ -4,29 +4,56 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 
 const calleContext = createContext();
-import { calleSocket, initPeerConnection } from "../utils/socket";
+import { calleSocket, initMediaDevice } from "../utils/mediaSocket";
+import {
+ saveRoomId,
+ iconButtonControl,
+ addRemoteChatBroadCast,
+} from "../utils/eventControlFunctions";
 
 const CalleContext = ({ children }) => {
- let [videoControl, setVideoControl] = useState(false);
- let [audioControl, setAudioControl] = useState(false);
+ let [videoControl, setVideoControl] = useState(true);
+ let [audioControl, setAudioControl] = useState(true);
  let [dropCall, setDropCall] = useState(false);
  let [shareScreen, setShareScreen] = useState(false);
  let [raiseHand, setRaiseHand] = useState(false);
  let [participant, setParticipant] = useState(false);
  let [showChat, setShowChat] = useState(false);
+ let [remotePeers, setRemotePeers] = useState([]);
 
  let localPeerCredentials = useRef();
  let localMediaStream = useRef();
- //  let peerSocketId = useRef();
+ let localStreamDevice = useRef();
+ let localStreamProducers = useRef();
+ let remoteStreamConsumers = useRef();
+ let chatMessageInput = useRef();
+ let chatMessageBox = useRef();
+ let chatUpdate = useRef();
 
- let [meetingVidNum, setMeetingVidNum] = useState(3);
+ const setCameraState = (inMeeting) => {
+  setVideoControl((prevstate) => {
+   if (inMeeting) {
+    calleSocket.emit("cameraState", calleSocket.id, !prevstate);
+   }
 
- const setCameraState = () => {
-  setVideoControl(!videoControl);
+   localMediaStream.current.getVideoTracks()[0].enabled = !prevstate;
+   return !prevstate;
+  });
  };
 
- const setAudioState = () => {
-  setAudioControl(!audioControl);
+ const setAudioState = (inMeeting) => {
+  setAudioControl((prevstate) => {
+   if (inMeeting) {
+    calleSocket.emit("audioState", calleSocket.id, !prevstate);
+   }
+   localMediaStream.current.getAudioTracks()[0].enabled = !prevstate;
+   return !prevstate;
+  });
+ };
+
+ const setRaiseHandState = () => {
+  calleSocket.emit("raiseHand", calleSocket.id, !raiseHand);
+  setRaiseHand(!raiseHand);
  };
 
  const setParticipantState = () => {
@@ -43,10 +70,71 @@ const CalleContext = ({ children }) => {
   setShowChat(!showChat);
  };
 
+ calleSocket.on("connect", () => {
+  localPeerCredentials.current = {
+   socketId: calleSocket.id,
+  };
+  //save room id on the client credientials object.
+  calleSocket.on("saveRoomId", saveRoomId(localPeerCredentials));
+
+  console.log("client-socket connected", localPeerCredentials.current);
+ });
+
  useEffect(() => {
-  calleSocket.on("connect", async () => {
-   localPeerCredentials.current = await initPeerConnection();
-   console.log("connected");
+  localStreamProducers.current = {};
+  remoteStreamConsumers.current = {};
+  chatUpdate.current = 0;
+
+  // initialize device for streaming media
+  localStreamDevice.current = initMediaDevice();
+  console.log("handlerName", localStreamDevice.current.handlerName);
+
+  calleSocket.on("updateRaiseHand", (id, state) => {
+   let iconElement = document.getElementById(`${id}-raiseHand`);
+   if (state === true) {
+    iconElement.classList.replace("icon-hide", "icon-show");
+   } else {
+    iconElement.classList.replace("icon-show", "icon-hide");
+   }
+  });
+
+  calleSocket.on("updateCameraState", (id, state) => {
+   let iconElement = document.getElementById(`${id}-camera`);
+   let participantCameraActive = document.getElementById(`${id}-cameraActive`);
+   let participantCameraInActive = document.getElementById(
+    `${id}-cameraInActive`
+   );
+
+   iconButtonControl(
+    state,
+    iconElement,
+    participantCameraActive,
+    participantCameraInActive
+   );
+  });
+
+  calleSocket.on("updateAudioState", (id, state) => {
+   let iconElement = document.getElementById(`${id}-mic`);
+   let participantMicActive = document.getElementById(`${id}-micActive`);
+   let participantMicInActive = document.getElementById(`${id}-micInActive`);
+   iconButtonControl(
+    state,
+    iconElement,
+    participantMicActive,
+    participantMicInActive
+   );
+  });
+
+  calleSocket.on("broadcastMessage", (userName, message) => {
+   chatUpdate.current++;
+   if (chatUpdate.current > 1) {
+    chatUpdate.current = 0;
+    return;
+   }
+
+   console.log(userName, message);
+
+   addRemoteChatBroadCast(chatMessageBox.current, userName, message);
   });
  }, []);
 
@@ -56,14 +144,14 @@ const CalleContext = ({ children }) => {
     value={{
      videoControl,
      audioControl,
-     meetingVidNum,
-     setMeetingVidNum,
+     remotePeers,
+     setRemotePeers,
      dropCall,
      setDropCall,
      shareScreen,
      setShareScreen,
      raiseHand,
-     setRaiseHand,
+     setRaiseHandState,
      participant,
      setParticipant,
      showChat,
@@ -74,6 +162,11 @@ const CalleContext = ({ children }) => {
      setShowChatState,
      localPeerCredentials,
      localMediaStream,
+     localStreamDevice,
+     localStreamProducers,
+     remoteStreamConsumers,
+     chatMessageInput,
+     chatMessageBox,
      calleSocket,
     }}
    >

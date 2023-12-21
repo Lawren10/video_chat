@@ -3,136 +3,203 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply m-0 p-0 box-border;
-  }
+ * {
+  @apply m-0 p-0 box-border;
+ }
 
-  body {
-    @apply text-calle-text-color bg-calle-bg-light dark:bg-calle-bg-dark antialiased;
-  }
+ body {
+  @apply text-calle-text-color bg-calle-bg-light dark:bg-calle-bg-dark antialiased;
+ }
 }
 
 @layer components {
-  .login-form-box {
-    @apply rounded-2xl py-8 px-4 backdrop-blur w-5/12 shadow-md;
-    background: rgba(47, 49, 66, 0.7);
+ .login-form-box {
+  @apply rounded-2xl py-8 px-4 backdrop-blur w-5/12 shadow-md;
+  background: rgba(47, 49, 66, 0.7);
+ }
+
+ .input-bg {
+  background-color: rgba(255, 255, 255, 0.5);
+  @apply outline-calle-btn-bg text-calle-black;
+ }
+
+ .topNav {
+  @apply absolute flex  w-full px-16  py-4 items-center justify-between shadow-md top-0 left-0 z-10;
+  backdrop-filter: blur(0.1rem);
+ }
+
+ .userBtn {
+  @apply shadow-xl rounded-md p-2 cursor-pointer relative bg-white;
+  @apply before:absolute before:w-2 before:h-2 before:bg-green-600 before:rounded-full before:right-0 before:-top-1;
+ }
+
+ .Container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+ }
+
+ .mainbg {
+  position: absolute;
+  inset: 0;
+  background: url("/assets/mainbg.png");
+  background-repeat: repeat;
+  background-size: contain;
+  mix-blend-mode: multiply;
+ }
+
+ .centerBox {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  /* border: 2px solid red; */
+ }
+
+ .homeBodyInnerBox {
+  @apply w-4/12 h-auto bg-transparent rounded-md;
+  backdrop-filter: blur(0.1rem);
+ }
+
+ .primaryBtn {
+  @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-calle-btn-bg hover:bg-calle-btn-hoverBg cursor-pointer;
+  @apply active:scale-[1.01] transition-transform;
+ }
+
+ .greenBtn {
+  @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-green-500 hover:bg-green-400 cursor-pointer;
+  @apply active:scale-[1.01] transition-transform;
+ }
+
+ .controlBtn {
+  @apply outline-none shadow-xl rounded-xl p-5 cursor-pointer bg-transparent text-2xl text-center backdrop-blur-[1px] border border-white text-white;
+  @apply active:scale-[1.01] transition-transform;
+ }
+
+ .meetingGridBoxMain {
+  @apply w-full min-h-full grid grid-flow-dense auto-rows-auto gap-2 place-content-center px-4;
+ }
+
+ .videoScreen {
+  @apply relative rounded-lg bg-calle-bg-dark overflow-hidden;
+ }
+
+ .video-screen-icon {
+  @apply w-8 h-8 grid place-content-center text-lg text-red-500;
+ }
+
+ .video-name-box {
+  @apply absolute bottom-2 left-2 py-2 px-4 rounded-md text-white font-bold text-sm bg-[rgba(0,0,0,0.2)] backdrop-blur-sm;
+ }
+
+ .controlBox {
+  @apply flex items-center justify-between border border-gray-300 w-1/2 px-4 py-4 bg-transparent rounded-lg shadow-xl backdrop-blur-[0.1rem];
+ }
+
+ .bottonControlBtn {
+  @apply outline-none p-4 rounded-xl text-2xl text-white cursor-pointer active:scale-[1.01] transition-transform;
+ }
+
+ .dropCallBtn {
+  @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-[#eb4132] hover:bg-[#d63384] cursor-pointer;
+  @apply active:scale-[1.01] transition-transform;
+ }
+
+ .bottonControlBtnBg {
+  background-color: rgba(47, 49, 66, 0.8);
+  transition: background-color 0.3s ease-in;
+ }
+
+ .audioVideoBtnBg {
+  background-color: #eb4132;
+  transition: background-color 0.3s ease-in;
+ }
+
+ .participantBtnBg {
+  background-color: rgb(79, 70, 229);
+  transition: background-color 0.3s ease-in;
+ }
+
+ .SideBarBox {
+  @apply absolute top-20 right-4 w-[22%] p-4 h-3/4 rounded-xl bg-[rgba(255,255,255,0.8)] backdrop-blur-[0.1rem] shadow-xl;
+ }
+
+ .hideSideBar {
+  @apply translate-x-[110%];
+  transition: transform 500ms ease-out;
+ }
+
+ .showSideBar {
+  @apply translate-x-[0];
+  transition: transform 500ms ease-in;
+ }
+
+ .inviteBtn {
+  @apply rounded-md text-white text-center font-bold py-3 px-8 w-full shadow-lg outline-none border-none bg-calle-btn-bg hover:bg-calle-btn-hoverBg cursor-pointer;
+  @apply active:scale-[1.01] transition-transform;
+ }
+
+ .closeBarBtn {
+  @apply outline-none p-4 rounded-xl text-white cursor-pointer active:scale-[1.01] transition-transform bg-[#eb4132] shadow-md;
+ }
+
+ @keyframes inView {
+  0% {
+   opacity: 0;
+   transform: translateY(-1rem);
   }
 
-  .input-bg {
-    background-color: rgba(255, 255, 255, 0.5);
-    @apply outline-calle-btn-bg text-calle-black;
+  100% {
+   opacity: 1;
+   transform: translateY(0);
+  }
+ }
+
+ @keyframes outOfView {
+  0% {
+   opacity: 1;
+   /* transform: translateY(0); */
   }
 
-  .topNav {
-    @apply absolute flex  w-full px-16  py-4 items-center justify-between shadow-md top-0 left-0 z-10;
-    backdrop-filter: blur(0.1rem);
+  100% {
+   opacity: 0;
+   transform: translateY(-1rem);
   }
+ }
 
-  .userBtn {
-    @apply shadow-xl rounded-md p-2 cursor-pointer relative bg-white;
-    @apply before:absolute before:w-2 before:h-2 before:bg-green-600 before:rounded-full before:right-0 before:-top-1;
-  }
+ .animateInview {
+  animation: inView 1s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+ }
 
-  .Container {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-  }
+ .animateOutview {
+  animation: outOfView 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+ }
 
-  .mainbg {
-    position: absolute;
-    inset: 0;
-    background: url("/assets/mainbg.png");
-    background-repeat: repeat;
-    background-size: contain;
-    mix-blend-mode: multiply;
-  }
+ .icon-Show {
+  opacity: 1;
+ }
 
-  .centerBox {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    /* border: 2px solid red; */
-  }
+ .icon-hide {
+  opacity: 0;
+ }
 
-  .homeBodyInnerBox {
-    @apply w-4/12 h-auto bg-transparent rounded-md;
-    backdrop-filter: blur(0.1rem);
-  }
+ .chat-partcpant-Box {
+  overflow-y: scroll;
+ }
 
-  .primaryBtn {
-    @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-calle-btn-bg hover:bg-calle-btn-hoverBg cursor-pointer;
-    @apply active:scale-[1.01] transition-transform;
-  }
+ /* width */
+ .chat-partcpant-Box::-webkit-scrollbar {
+  width: 3px;
+ }
 
-  .greenBtn {
-    @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-green-500 hover:bg-green-400 cursor-pointer;
-    @apply active:scale-[1.01] transition-transform;
-  }
+ /* Track */
+ .chat-partcpant-Box::-webkit-scrollbar-track {
+  background: transparent;
+ }
 
-  .controlBtn {
-    @apply outline-none shadow-xl rounded-xl p-5 cursor-pointer bg-transparent text-2xl text-center backdrop-blur-[1px] border border-white text-white;
-    @apply active:scale-[1.01] transition-transform;
-  }
-
-  .meetingGridBoxMain {
-    @apply w-full min-h-full grid grid-flow-dense auto-rows-auto gap-2 place-content-center px-4;
-  }
-
-  .videoScreen {
-    @apply rounded-lg bg-calle-bg-dark;
-  }
-
-  .controlBox {
-    @apply flex items-center justify-between border border-gray-300 w-1/2 px-4 py-4 bg-transparent rounded-lg shadow-xl backdrop-blur-[0.1rem];
-  }
-
-  .bottonControlBtn {
-    @apply outline-none p-4 rounded-xl text-2xl text-white cursor-pointer active:scale-[1.01] transition-transform;
-  }
-
-  .dropCallBtn {
-    @apply flex gap-2 items-center justify-center rounded-md text-white text-center font-bold py-3 px-8 shadow-lg outline-none border-none bg-[#eb4132] hover:bg-[#d63384] cursor-pointer;
-    @apply active:scale-[1.01] transition-transform;
-  }
-
-  .bottonControlBtnBg {
-    background-color: rgba(47, 49, 66, 0.8);
-    transition: background-color 0.3s ease-in;
-  }
-
-  .audioVideoBtnBg {
-    background-color: #eb4132;
-    transition: background-color 0.3s ease-in;
-  }
-
-  .participantBtnBg {
-    background-color: rgb(79, 70, 229);
-    transition: background-color 0.3s ease-in;
-  }
-
-  .SideBarBox {
-    @apply absolute top-20 right-4 w-[22%] p-4 h-3/4 rounded-xl bg-[rgba(255,255,255,0.8)] backdrop-blur-[0.1rem] shadow-xl;
-  }
-
-  .hideSideBar {
-    @apply translate-x-[110%];
-    transition: transform 500ms ease-out;
-  }
-
-  .showSideBar {
-    @apply translate-x-[0];
-    transition: transform 500ms ease-in;
-  }
-
-  .inviteBtn {
-    @apply rounded-md text-white text-center font-bold py-3 px-8 w-full shadow-lg outline-none border-none bg-calle-btn-bg hover:bg-calle-btn-hoverBg cursor-pointer;
-    @apply active:scale-[1.01] transition-transform;
-  }
-
-  .closeBarBtn {
-    @apply outline-none p-4 rounded-xl text-white cursor-pointer active:scale-[1.01] transition-transform bg-[#eb4132] shadow-md;
-  }
+ /* Handle */
+ .chat-partcpant-Box::-webkit-scrollbar-thumb {
+  background: rgb(79, 70, 229);
+ }
 }

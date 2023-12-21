@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
  PiMicrophoneFill,
  PiMicrophoneSlashFill,
@@ -8,9 +9,13 @@ import {
  PiPhoneFill,
 } from "react-icons/pi";
 import { useCalleContextValues } from "../../../contexApi/CalleContext";
-import { getMediaStream } from "../../../utils/controls";
-
-// import { Link } from "react-router-dom";
+import {
+ loadMediaTracks,
+ loadRouterRtpCapablities,
+ createProducerTransportandProduce,
+ createConsumerTransport,
+ consumeServerStream,
+} from "../../../utils/eventControlFunctions";
 
 const Body = () => {
  let {
@@ -18,97 +23,182 @@ const Body = () => {
   audioControl,
   setCameraState,
   setAudioState,
-  localPeerCredentials,
   calleSocket,
+  localPeerCredentials,
   localMediaStream,
+  localStreamDevice,
+  localStreamProducers,
+  remoteStreamConsumers,
+  setRemotePeers,
  } = useCalleContextValues();
 
+ let navigate = useNavigate();
  let [showField, setShowField] = useState(false);
  let [showvideo, setShowVideo] = useState(false);
+ let [roomId, setRoomId] = useState("");
+ let [roomIdError, setRoomIdError] = useState(false);
  let videoRef = useRef();
+
+ //handle room id update function
+ const updateRoomId = (e) => {
+  if (roomIdError === true) {
+   setRoomIdError(false);
+  }
+  setRoomId(e.target.value);
+ };
 
  // create room function
  const createRoom = async () => {
   console.log("creating room");
+  console.log("from create room", localPeerCredentials.current);
 
-  localMediaStream.current.getTracks().forEach((mediaTrack) => {
-   console.log("adding tracks to peer");
-   console.log(mediaTrack);
-   console.log("local meda track", localMediaStream.current);
-   localPeerCredentials.current.addTrack(mediaTrack, localMediaStream.current);
+  // load the device with server rtpcapabilities
+  calleSocket.on("loadRouterRtpCapablities", (serverRouterRtpCapabilities) => {
+   loadRouterRtpCapablities(
+    serverRouterRtpCapabilities,
+    localStreamDevice,
+    calleSocket
+   );
   });
 
-  // localPeerCredentials.current.ontrack = (e) => {
-  //  console.log("event form clent ontrack", e);
-  // };
+  calleSocket.on("createClientProducerTransport", async (params) => {
+   await createProducerTransportandProduce(
+    calleSocket,
+    localStreamDevice,
+    localStreamProducers,
+    localPeerCredentials.current["roomId"],
+    navigate,
+    params,
+    true
+   );
+  });
 
-  const clientOffer = await localPeerCredentials.current.createOffer();
-  console.log("client offer created");
-  await localPeerCredentials.current.setLocalDescription(clientOffer);
-  console.log("client local discription set");
+  calleSocket.on("createClientConsumerTransport", (params, peerToConnectId) => {
+   createConsumerTransport(
+    calleSocket,
+    localStreamDevice,
+    remoteStreamConsumers,
+    params,
+    peerToConnectId
+   );
+  });
 
-  localPeerCredentials.current.onicecandidate = (e) => {
-   if (e.candidate) {
-    console.log("clent candidates", e.candidate);
-    calleSocket.emit("sendingClientIceCandidates", {
-     iceCanditate: e.candidate,
-    });
-   } else {
-    console.log("no candidates");
-    console.log(localPeerCredentials.current.connectionState);
-   }
-  };
+  calleSocket.on("consumeStream", async (param) => {
+   await consumeServerStream(
+    calleSocket,
+    remoteStreamConsumers,
+    setRemotePeers,
+    navigate,
+    param,
+    videoControl,
+    audioControl
+   );
+  });
 
-  localPeerCredentials.current.onTrack = (e) => {
-   console.log("from remote track", e);
-  };
+  calleSocket.on("new peer joined", (id) => {
+   console.log("new peer joined", id);
+   calleSocket.emit("createServerConsumerTransport", id);
+  });
+  calleSocket.emit(
+   "create room",
+   "createRoom",
+   localPeerCredentials.current.username
+  );
+ };
 
-  localPeerCredentials.current.onconnectionstatechange = () => {
-   console.log("connection state changing");
-  };
+ // join room function
+ const joinRoom = () => {
+  console.log("jioning room");
 
-  calleSocket.on("sending stream", (stream) => {
-   stream.forEach((element) => {
-    console.log("track stream", element.id);
+  if (roomId === "") {
+   setRoomIdError(true);
+   return;
+  }
+
+  console.log(roomId);
+
+  // load the device with server rtpcapabilities
+  calleSocket.on("loadRouterRtpCapablities", (serverRouterRtpCapabilities) => {
+   loadRouterRtpCapablities(
+    serverRouterRtpCapabilities,
+    localStreamDevice,
+    calleSocket
+   );
+  });
+
+  calleSocket.on("createClientProducerTransport", async (params) => {
+   await createProducerTransportandProduce(
+    calleSocket,
+    localStreamDevice,
+    localStreamProducers,
+    localPeerCredentials.current["roomId"],
+    navigate,
+    params,
+    false
+   );
+  });
+
+  calleSocket.on("createClientConsumerTransport", (params, peerToConnectId) => {
+   createConsumerTransport(
+    calleSocket,
+    localStreamDevice,
+    remoteStreamConsumers,
+    params,
+    peerToConnectId
+   );
+  });
+
+  calleSocket.on("consumeStream", async (param) => {
+   await consumeServerStream(
+    calleSocket,
+    remoteStreamConsumers,
+    setRemotePeers,
+    navigate,
+    param,
+    videoControl,
+    audioControl
+   );
+  });
+
+  calleSocket.on("roomId-error", () => {
+   console.log("wrong room id kindly provide the appropriate one");
+   setRoomIdError(true);
+  });
+
+  calleSocket.on("new peer joined", (id) => {
+   console.log("new peer joined", id);
+   calleSocket.emit("createServerConsumerTransport", id);
+  });
+
+  calleSocket.on("get all connected peer", (socketIds) => {
+   console.log("getting all connected peer", socketIds);
+
+   socketIds.forEach((peerId) => {
+    calleSocket.emit("createServerConsumerTransport", peerId);
    });
   });
 
-  let roomId = `name-id-${calleSocket.id}`;
-
-  // calleSocket.emit("createRoom", {
-  //  roomId: roomId,
-  //  clientOffer: clientOffer,
-  // });
-
-  calleSocket.on("getServerAnswer", async (serverAnswer) => {
-   console.log("server answer", serverAnswer);
-   const serverCredential = new RTCSessionDescription(serverAnswer);
-   await localPeerCredentials.current.setRemoteDescription(serverCredential);
-   console.log("server remote answer set");
-  });
-
-  calleSocket.on("stream", (stram) => {
-   console.log("from streamng", stram);
-  });
+  calleSocket.emit(
+   "join room",
+   "joinRoom",
+   roomId,
+   localPeerCredentials.current.username
+  );
  };
 
  useEffect(() => {
-  (async function () {
-   localMediaStream.current = await getMediaStream();
-   // videoRef.current.srcObject = localMediaStream.current;
-   // setShowVideo(true);
-  })();
- }, []);
+  loadMediaTracks(localMediaStream, videoRef, setShowVideo);
+ }, [localMediaStream]);
 
  return (
   <>
-   {/* {console.log("peer", peer)} */}
+   {/* {console.log("peer", localPeerCredentials.current.username)} */}
 
    <section className="w-full h-[100%] grid place-items-center">
     {/* container with blured background */}
     <div className="homeBodyInnerBox">
      {/* container for initial video display, picture and video controls */}
-     <div className="relative h-[24rem] rounded-md">
+     <div className="relative h-[24rem] rounded-md overflow-hidden">
       <img
        src="/assets/videochat.jpg"
        alt="video chat image"
@@ -124,12 +214,26 @@ const Body = () => {
       />
 
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center justify-center gap-8">
-       <button className="controlBtn" onClick={setCameraState}>
-        {videoControl ? <PiVideoCameraSlashFill /> : <PiVideoCameraFill />}
+       <button
+        className={`controlBtn ${
+         videoControl ? "" : "border-red-500 text-red-500"
+        }`}
+        onClick={() => {
+         setCameraState(false);
+        }}
+       >
+        {videoControl ? <PiVideoCameraFill /> : <PiVideoCameraSlashFill />}
        </button>
 
-       <button className="controlBtn" onClick={setAudioState}>
-        {audioControl ? <PiMicrophoneSlashFill /> : <PiMicrophoneFill />}
+       <button
+        className={`controlBtn ${
+         audioControl ? "" : "border-red-500 text-red-500"
+        }`}
+        onClick={() => {
+         setAudioState(false);
+        }}
+       >
+        {audioControl ? <PiMicrophoneFill /> : <PiMicrophoneSlashFill />}
        </button>
       </div>
      </div>
@@ -137,7 +241,12 @@ const Body = () => {
      {/* buttons for making and joing call */}
 
      <div className="flex gap-4 my-8">
-      <button className="primaryBtn" onClick={() => setShowField(!showField)}>
+      <button
+       className="primaryBtn"
+       onClick={() => {
+        setShowField(!showField);
+       }}
+      >
        <PiVideoCameraFill /> Join Meeting
       </button>
       <button className="greenBtn" onClick={createRoom}>
@@ -145,25 +254,30 @@ const Body = () => {
       </button>
      </div>
 
-     {/* input field for joining call  */}
-     {/* <Link to={"/meeting"}>New Meeting</Link> */}
-
-     {showField && (
-      <div className="">
-       <p className="text-calle-black font-bold text-lg">
-        Provide the call link below...
-       </p>
-       <div className="flex gap-2">
-        <input
-         type="text"
-         className="rounded p-3 bg-slate-200 outline-calle-btn-bg w-full text-calle-black"
-        />
-        <button className="primaryBtn">
-         <PiPhoneFill />
-        </button>
-       </div>
+     <div className={`${showField ? "animateInview" : "animateOutview"}`}>
+      <p className="text-calle-black font-bold text-lg">
+       Provide the meeting room name or id.
+      </p>
+      <div className="flex gap-2">
+       <input
+        type="text"
+        className="rounded p-3 bg-slate-200 outline-calle-btn-bg w-full text-calle-black"
+        value={roomId}
+        onChange={updateRoomId}
+       />
+       <button className="primaryBtn" onClick={joinRoom}>
+        <PiPhoneFill />
+       </button>
       </div>
-     )}
+      <small
+       className={`text-red-500 text-sm font-medium ${
+        roomIdError ? "opacity-1" : "opacity-0"
+       } `}
+      >
+       you need a meeting room name or id to join a meeting or the meeting id
+       provided is wrong.
+      </small>
+     </div>
     </div>
    </section>
   </>
