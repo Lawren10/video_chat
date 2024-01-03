@@ -10,6 +10,7 @@ import {
  PiChatTeardropTextFill,
 } from "react-icons/pi";
 import { MdScreenShare } from "react-icons/md";
+import { shareScreenCaptureStream } from "../../utils/eventControlFunctions";
 
 import { useCalleContextValues } from "../../contexApi/CalleContext";
 import { useLocation } from "react-router-dom";
@@ -32,6 +33,8 @@ const Controls = () => {
   setAudioState,
   setParticipantState,
   setShowChatState,
+  localMediaStream,
+  localStreamProducers,
  } = useCalleContextValues();
 
  return (
@@ -72,7 +75,12 @@ const Controls = () => {
       <button className="dropCallBtn text-2xl">
        <PiPhoneSlashFill />
       </button>
-      <button className="greenBtn text-2xl">
+      <button
+       className="greenBtn text-2xl"
+       onClick={() =>
+        shareScreenCaptureStream(localStreamProducers, localMediaStream)
+       }
+      >
        <MdScreenShare />
       </button>
      </div>

@@ -49,6 +49,20 @@ export const audioTransportParams = {
  ],
 };
 
+export const displayMediaOptions = {
+ video: {
+  displaySurface: "browser",
+ },
+ audio: {
+  suppressLocalAudioPlayback: false,
+ },
+ preferCurrentTab: false,
+ selfBrowserSurface: "exclude",
+ systemAudio: "include",
+ surfaceSwitching: "include",
+ monitorTypeSurfaces: "include",
+};
+
 export const getMediaStream = async () => {
  let localStream = await navigator.mediaDevices.getUserMedia(constraints);
 

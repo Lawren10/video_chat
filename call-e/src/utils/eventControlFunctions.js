@@ -2,6 +2,7 @@ import {
  videoTransportParams,
  audioTransportParams,
  getMediaStream,
+ displayMediaOptions,
 } from "./mediaControls";
 
 export const loadMediaTracks = async (
@@ -16,6 +17,32 @@ export const loadMediaTracks = async (
 
  videoRef.current.srcObject = localMediaStream.current;
  setShowVideo(true);
+};
+
+export const shareScreenCaptureStream = async (localStreamProducers) => {
+ let screenCapture = await navigator.mediaDevices.getDisplayMedia(
+  displayMediaOptions
+ );
+ let screenCaptureVideo = screenCapture.getVideoTracks()[0];
+
+ //  console.log(screenCaptureVideo);
+ console.log(
+  "local stream producer",
+  localStreamProducers.current.localVideoProducer
+ );
+
+ await localStreamProducers.current.localVideoProducer.replaceTrack({
+  track: screenCaptureVideo,
+ });
+
+ //  localMediaStream.current.getTracks().forEach((track) => {
+ //   console.log(track.kind);
+ //   if (track.kind === "video") {
+ //    let videoTrack = localMediaStream.current.getVideoTracks()[0];
+ //    localMediaStream.current.removeTrack(videoTrack);
+ //    localMediaStream.current.addTrack(screenCaptureVideo);
+ //   }
+ //  });
 };
 
 export const loadRouterRtpCapablities = async (
@@ -50,7 +77,8 @@ export const createProducerTransportandProduce = async (
  roomId,
  navigate,
  params,
- createRoom
+ createRoom,
+ localMediaStream
 ) => {
  console.log("server transport params", params);
 
@@ -119,13 +147,24 @@ export const createProducerTransportandProduce = async (
   }
  });
 
- //creating the video producer for the video and audio stream
+ //creating the producer for the video and audio stream
 
  let localVideoProducer = await producerTransport.produce(videoTransportParams);
  let localAudioProducer = await producerTransport.produce(audioTransportParams);
 
- localVideoProducer.on("trackended", () => {
+ localVideoProducer.on("trackended", async () => {
   console.log("track ended");
+  //   localStreamProducers.current.localVideoProducer._track.readyState = "live";
+  let localVideo = localMediaStream.current.getVideoTracks()[0];
+  console.log("camera video", localVideo);
+  console.log(
+   "local video producer",
+   localStreamProducers.current.localVideoProducer
+  );
+
+  await localStreamProducers.current.localVideoProducer.replaceTrack({
+   track: localVideo,
+  });
  });
 
  localVideoProducer.on("transportclose", () => {
