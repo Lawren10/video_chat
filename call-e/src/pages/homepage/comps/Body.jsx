@@ -69,8 +69,7 @@ const Body = () => {
     localPeerCredentials.current["roomId"],
     navigate,
     params,
-    true,
-    localMediaStream
+    true
    );
   });
 
@@ -135,8 +134,7 @@ const Body = () => {
     localPeerCredentials.current["roomId"],
     navigate,
     params,
-    false,
-    localMediaStream
+    false
    );
   });
 

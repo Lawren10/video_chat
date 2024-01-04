@@ -51,6 +51,13 @@ const CalleContext = ({ children }) => {
   });
  };
 
+ const updateAftersharingScreen = () => {
+  calleSocket.emit("cameraState", calleSocket.id, videoControl);
+  calleSocket.emit("audioState", calleSocket.id, audioControl);
+  localMediaStream.current.getVideoTracks()[0].enabled = videoControl;
+  localMediaStream.current.getAudioTracks()[0].enabled = audioControl;
+ };
+
  const setRaiseHandState = () => {
   calleSocket.emit("raiseHand", calleSocket.id, !raiseHand);
   setRaiseHand(!raiseHand);
@@ -160,6 +167,7 @@ const CalleContext = ({ children }) => {
      setAudioState,
      setParticipantState,
      setShowChatState,
+     updateAftersharingScreen,
      localPeerCredentials,
      localMediaStream,
      localStreamDevice,

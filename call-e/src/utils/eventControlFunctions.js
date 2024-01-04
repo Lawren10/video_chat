@@ -19,12 +19,36 @@ export const loadMediaTracks = async (
  setShowVideo(true);
 };
 
-export const shareScreenCaptureStream = async (localStreamProducers) => {
+export const shareScreenCaptureStream = async (
+ localStreamProducers,
+ localMediaStream,
+ updateAftersharingScreen
+) => {
  let screenCapture = await navigator.mediaDevices.getDisplayMedia(
   displayMediaOptions
  );
  let screenCaptureVideo = screenCapture.getVideoTracks()[0];
 
+ screenCaptureVideo.onended = async () => {
+  localMediaStream.current = await getMediaStream();
+  let localVideo = localMediaStream.current.getVideoTracks()[0];
+
+  console.log("camera video", localVideo);
+  console.log(
+   "local video producer",
+   localStreamProducers.current.localVideoProducer
+  );
+
+  await localStreamProducers.current.localVideoProducer.replaceTrack({
+   track: localVideo,
+  });
+
+  let video = document.getElementById("main");
+  video.srcObject = localMediaStream.current;
+  updateAftersharingScreen();
+ };
+
+ localMediaStream.current.getVideoTracks()[0].enabled = false;
  //  console.log(screenCaptureVideo);
  console.log(
   "local stream producer",
@@ -77,8 +101,7 @@ export const createProducerTransportandProduce = async (
  roomId,
  navigate,
  params,
- createRoom,
- localMediaStream
+ createRoom
 ) => {
  console.log("server transport params", params);
 
@@ -154,17 +177,6 @@ export const createProducerTransportandProduce = async (
 
  localVideoProducer.on("trackended", async () => {
   console.log("track ended");
-  //   localStreamProducers.current.localVideoProducer._track.readyState = "live";
-  let localVideo = localMediaStream.current.getVideoTracks()[0];
-  console.log("camera video", localVideo);
-  console.log(
-   "local video producer",
-   localStreamProducers.current.localVideoProducer
-  );
-
-  await localStreamProducers.current.localVideoProducer.replaceTrack({
-   track: localVideo,
-  });
  });
 
  localVideoProducer.on("transportclose", () => {

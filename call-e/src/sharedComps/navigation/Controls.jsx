@@ -33,6 +33,7 @@ const Controls = () => {
   setAudioState,
   setParticipantState,
   setShowChatState,
+  updateAftersharingScreen,
   localMediaStream,
   localStreamProducers,
  } = useCalleContextValues();
@@ -78,7 +79,11 @@ const Controls = () => {
       <button
        className="greenBtn text-2xl"
        onClick={() =>
-        shareScreenCaptureStream(localStreamProducers, localMediaStream)
+        shareScreenCaptureStream(
+         localStreamProducers,
+         localMediaStream,
+         updateAftersharingScreen
+        )
        }
       >
        <MdScreenShare />
