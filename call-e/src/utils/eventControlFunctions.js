@@ -22,7 +22,9 @@ export const loadMediaTracks = async (
 export const shareScreenCaptureStream = async (
  localStreamProducers,
  localMediaStream,
- updateAftersharingScreen
+ updateAftersharingScreen,
+ calleSocket,
+ roomId
 ) => {
  let screenCapture = await navigator.mediaDevices.getDisplayMedia(
   displayMediaOptions
@@ -58,6 +60,8 @@ export const shareScreenCaptureStream = async (
  await localStreamProducers.current.localVideoProducer.replaceTrack({
   track: screenCaptureVideo,
  });
+
+ calleSocket.emit("sharingScreen", roomId);
 
  //  localMediaStream.current.getTracks().forEach((track) => {
  //   console.log(track.kind);

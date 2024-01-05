@@ -20,6 +20,7 @@ const CalleContext = ({ children }) => {
  let [participant, setParticipant] = useState(false);
  let [showChat, setShowChat] = useState(false);
  let [remotePeers, setRemotePeers] = useState([]);
+ let [nowSharing, setNowSharing] = useState(null);
 
  let localPeerCredentials = useRef();
  let localMediaStream = useRef();
@@ -56,6 +57,7 @@ const CalleContext = ({ children }) => {
   calleSocket.emit("audioState", calleSocket.id, audioControl);
   localMediaStream.current.getVideoTracks()[0].enabled = videoControl;
   localMediaStream.current.getAudioTracks()[0].enabled = audioControl;
+  setNowSharing(null);
  };
 
  const setRaiseHandState = () => {
@@ -139,9 +141,11 @@ const CalleContext = ({ children }) => {
     return;
    }
 
-   console.log(userName, message);
-
    addRemoteChatBroadCast(chatMessageBox.current, userName, message);
+
+   calleSocket.on("userSharingScreen", (id) => {
+    setNowSharing(id);
+   });
   });
  }, []);
 
@@ -149,6 +153,7 @@ const CalleContext = ({ children }) => {
   <>
    <calleContext.Provider
     value={{
+     nowSharing,
      videoControl,
      audioControl,
      remotePeers,

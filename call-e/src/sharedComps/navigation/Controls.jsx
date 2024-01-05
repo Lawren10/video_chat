@@ -36,6 +36,9 @@ const Controls = () => {
   updateAftersharingScreen,
   localMediaStream,
   localStreamProducers,
+  calleSocket,
+  localPeerCredentials,
+  nowSharing,
  } = useCalleContextValues();
 
  return (
@@ -82,9 +85,12 @@ const Controls = () => {
         shareScreenCaptureStream(
          localStreamProducers,
          localMediaStream,
-         updateAftersharingScreen
+         updateAftersharingScreen,
+         calleSocket,
+         localPeerCredentials.current.roomId
         )
        }
+       disabled={`${nowSharing !== null}`}
       >
        <MdScreenShare />
       </button>
