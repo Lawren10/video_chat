@@ -90,7 +90,7 @@ const Controls = () => {
          localPeerCredentials.current.roomId
         )
        }
-       disabled={`${nowSharing !== null}`}
+       disabled={nowSharing !== null}
       >
        <MdScreenShare />
       </button>

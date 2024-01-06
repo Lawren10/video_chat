@@ -61,7 +61,9 @@ export const shareScreenCaptureStream = async (
   track: screenCaptureVideo,
  });
 
- calleSocket.emit("sharingScreen", roomId);
+ setTimeout(() => {
+  calleSocket.emit("sharingScreen", roomId);
+ }, 10000);
 
  //  localMediaStream.current.getTracks().forEach((track) => {
  //   console.log(track.kind);

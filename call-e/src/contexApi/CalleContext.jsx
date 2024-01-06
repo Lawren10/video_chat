@@ -142,10 +142,21 @@ const CalleContext = ({ children }) => {
    }
 
    addRemoteChatBroadCast(chatMessageBox.current, userName, message);
+  });
 
-   calleSocket.on("userSharingScreen", (id) => {
-    setNowSharing(id);
-   });
+  calleSocket.on("userSharingScreen", (id) => {
+   console.log("now sharing id", id);
+   // document
+   //  .getElementById("main")
+   //  .classList.add("absolute w-64 bottom-0 left-4");
+
+   //  remotePeers.forEach((id)=>{
+   //   let videoElement = document.getElementById(id)
+   //   if(videoElement.id === id){
+   //    videoElement.classList.add("")
+   //   }
+   //  })
+   setNowSharing(id);
   });
  }, []);
 
