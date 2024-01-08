@@ -371,3 +371,31 @@ export const updateLocalChats = (element, message, socket, roomId) => {
  socket.emit("chatMessage", message.value, roomId);
  message.value = "";
 };
+
+//update screen sharing screen ui function
+
+export const updateScreenSharingUi = (remotePeers) => {
+ document
+  .getElementById("main-video-cont")
+  .classList.add("absolute", "w-64", "bottom-0", "left-4", "z-50");
+ //  console.log("main video element", mainElement);
+ remotePeers.forEach((id) => {
+  console.log("id from loop", id);
+  let videoElement = document.getElementById(id);
+  if (videoElement.id !== id) {
+   videoElement.classList.add("hidden");
+  }
+ });
+
+ //  let screenCont = document.getElementById("screens-cont");
+
+ //  screenCont.classList.remove("grid-cols-2");
+ //  screenCont.classList.add("auto-grid-auto");
+
+ //  if (remotePeers.length > 1) {
+ //   screenCont.classList.remove("grid-cols-3");
+ //   screenCont.classList.add("auto-grid-auto");
+ //  }
+
+ //  console.log(screenCont);
+};

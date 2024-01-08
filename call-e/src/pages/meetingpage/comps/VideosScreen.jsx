@@ -39,7 +39,10 @@ const VideoScreen = ({ local, peerId }) => {
 
  return (
   <>
-   <div className={`videoScreen `}>
+   <div
+    className={`videoScreen `}
+    id={peerId === "main" ? "main-video-cont" : ""}
+   >
     <i
      className={`video-screen-icon absolute top-4 left-4 text-lg text-amber-500 icon-hide`}
      id={`${peerId}-raiseHand`}
@@ -55,7 +58,7 @@ const VideoScreen = ({ local, peerId }) => {
      </i>
     </div>
 
-    <video className="w-full" autoPlay id={peerId} />
+    <video className={`w-full`} autoPlay id={peerId} />
 
     {peerId !== "main" ? (
      <p className="video-name-box">

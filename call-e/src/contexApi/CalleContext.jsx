@@ -9,6 +9,7 @@ import {
  saveRoomId,
  iconButtonControl,
  addRemoteChatBroadCast,
+ updateScreenSharingUi,
 } from "../utils/eventControlFunctions";
 
 const CalleContext = ({ children }) => {
@@ -146,16 +147,7 @@ const CalleContext = ({ children }) => {
 
   calleSocket.on("userSharingScreen", (id) => {
    console.log("now sharing id", id);
-   // document
-   //  .getElementById("main")
-   //  .classList.add("absolute w-64 bottom-0 left-4");
-
-   //  remotePeers.forEach((id)=>{
-   //   let videoElement = document.getElementById(id)
-   //   if(videoElement.id === id){
-   //    videoElement.classList.add("")
-   //   }
-   //  })
+   updateScreenSharingUi(remotePeers);
    setNowSharing(id);
   });
  }, []);

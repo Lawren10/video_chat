@@ -11,24 +11,24 @@ let Index = () => {
    {console.log("remote peers", remotePeers)}
 
    <div className="h-5/6 w-full overflow-y-scroll relative">
-    {nowSharing === null ? (
-     <div
-      className={`meetingGridBoxMain ${
-       remotePeers.length === 0
-        ? "auto-grid-auto"
-        : remotePeers.length === 1
-        ? "grid-cols-2"
-        : "grid-cols-3"
-      } h-full`}
-     >
-      <VideoScreen local={true} peerId={"main"} />
+    <div
+     className={`meetingGridBoxMain ${
+      remotePeers.length === 0 || nowSharing !== null
+       ? "auto-grid-auto"
+       : remotePeers.length === 1
+       ? "grid-cols-2"
+       : "grid-cols-3"
+     } h-full `}
+     id="screens-cont"
+    >
+     <VideoScreen local={true} peerId={"main"} />
 
-      {remotePeers.length &&
-       remotePeers.map((peerId) => {
-        return <VideoScreen key={peerId} local={false} peerId={peerId} />;
-       })}
-     </div>
-    ) : (
+     {remotePeers.length &&
+      remotePeers.map((peerId) => {
+       return <VideoScreen key={peerId} local={false} peerId={peerId} />;
+      })}
+    </div>
+    {/* ) : (
      <div className="meetingGridBoxMain auto-grid-auto h-full">
       <VideoScreen local={false} peerId={nowSharing} />
 
@@ -36,7 +36,7 @@ let Index = () => {
        <VideoScreen local={true} peerId={"main"} />
       </div>
      </div>
-    )}
+    )} */}
    </div>
   </section>
  );
