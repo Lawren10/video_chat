@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import React, { useEffect } from "react";
@@ -8,7 +9,7 @@ import {
  PiHandPalmFill,
 } from "react-icons/pi";
 
-const VideoScreen = ({ local, peerId }) => {
+const VideoScreen = ({ local, peerId, sharingUser }) => {
  let { remoteStreamConsumers, localMediaStream } = useCalleContextValues();
 
  const displayStream = () => {
@@ -40,8 +41,22 @@ const VideoScreen = ({ local, peerId }) => {
  return (
   <>
    <div
-    className={`videoScreen `}
-    id={peerId === "main" ? "main-video-cont" : ""}
+    className={`videoScreen ${
+     peerId === "main" || sharingUser === null
+      ? ""
+      : sharingUser === peerId
+      ? ""
+      : "hidden"
+    }
+
+    ${
+     peerId === "main" && sharingUser !== null
+      ? "absolute w-64 bottom-0 left-4 z-50"
+      : ""
+    }
+    
+    `}
+    // id={peerId === "main" ? "main-video-cont" : ""}
    >
     <i
      className={`video-screen-icon absolute top-4 left-4 text-lg text-amber-500 icon-hide`}
@@ -58,7 +73,7 @@ const VideoScreen = ({ local, peerId }) => {
      </i>
     </div>
 
-    <video className={`w-full`} autoPlay id={peerId} />
+    <video className={`w-full `} autoPlay id={peerId} />
 
     {peerId !== "main" ? (
      <p className="video-name-box">

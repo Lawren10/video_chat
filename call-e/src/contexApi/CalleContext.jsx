@@ -9,7 +9,7 @@ import {
  saveRoomId,
  iconButtonControl,
  addRemoteChatBroadCast,
- updateScreenSharingUi,
+ // updateScreenSharingUi,
 } from "../utils/eventControlFunctions";
 
 const CalleContext = ({ children }) => {
@@ -147,8 +147,9 @@ const CalleContext = ({ children }) => {
 
   calleSocket.on("userSharingScreen", (id) => {
    console.log("now sharing id", id);
-   updateScreenSharingUi(remotePeers);
    setNowSharing(id);
+
+   // updateScreenSharingUi(remotePeers);
   });
  }, []);
 
@@ -157,6 +158,7 @@ const CalleContext = ({ children }) => {
    <calleContext.Provider
     value={{
      nowSharing,
+     setNowSharing,
      videoControl,
      audioControl,
      remotePeers,

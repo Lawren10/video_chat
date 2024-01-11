@@ -378,10 +378,11 @@ export const updateScreenSharingUi = (remotePeers) => {
  document
   .getElementById("main-video-cont")
   .classList.add("absolute", "w-64", "bottom-0", "left-4", "z-50");
- //  console.log("main video element", mainElement);
+ console.log("main video element", remotePeers);
  remotePeers.forEach((id) => {
   console.log("id from loop", id);
   let videoElement = document.getElementById(id);
+  console.log("videoElement", videoElement);
   if (videoElement.id !== id) {
    videoElement.classList.add("hidden");
   }

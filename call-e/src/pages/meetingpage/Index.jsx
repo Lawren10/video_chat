@@ -6,6 +6,21 @@ import { useCalleContextValues } from "../../contexApi/CalleContext";
 let Index = () => {
  let { nowSharing, remotePeers } = useCalleContextValues();
 
+ const displayScreens = () => {
+  if (remotePeers.length) {
+   return remotePeers.map((peerId) => {
+    return (
+     <VideoScreen
+      key={peerId}
+      local={false}
+      peerId={peerId}
+      sharingUser={nowSharing}
+     />
+    );
+   });
+  }
+ };
+
  return (
   <section className="Container pt-20">
    {console.log("remote peers", remotePeers)}
@@ -23,10 +38,7 @@ let Index = () => {
     >
      <VideoScreen local={true} peerId={"main"} />
 
-     {remotePeers.length &&
-      remotePeers.map((peerId) => {
-       return <VideoScreen key={peerId} local={false} peerId={peerId} />;
-      })}
+     {displayScreens()}
     </div>
     {/* ) : (
      <div className="meetingGridBoxMain auto-grid-auto h-full">
@@ -43,3 +55,9 @@ let Index = () => {
 };
 
 export default React.memo(Index);
+
+// remotePeers.length && nowSharing === null
+//  ? remotePeers.map((peerId) => {
+//     return <VideoScreen key={peerId} local={false} peerId={peerId} />;
+//    })
+//  : "";
