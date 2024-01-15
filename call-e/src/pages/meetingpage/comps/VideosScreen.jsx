@@ -28,7 +28,6 @@ const VideoScreen = ({ local, peerId, sharingUser }) => {
     remoteStreamConsumers.current[peerId].videoConsumer.track,
     remoteStreamConsumers.current[peerId].audioConsumer.track,
    ]);
-   console.log(remoteStreamConsumers.current[peerId].videoConsumer);
   }
 
   video.srcObject = mediaStream;
@@ -41,13 +40,7 @@ const VideoScreen = ({ local, peerId, sharingUser }) => {
  return (
   <>
    <div
-    className={`videoScreen ${
-     peerId === "main" || sharingUser === null
-      ? ""
-      : sharingUser === peerId
-      ? ""
-      : "hidden"
-    }
+    className={`videoScreen 
 
     ${
      peerId === "main" && sharingUser !== null
@@ -56,7 +49,6 @@ const VideoScreen = ({ local, peerId, sharingUser }) => {
     }
     
     `}
-    // id={peerId === "main" ? "main-video-cont" : ""}
    >
     <i
      className={`video-screen-icon absolute top-4 left-4 text-lg text-amber-500 icon-hide`}

@@ -43,7 +43,6 @@ const Controls = () => {
 
  return (
   <>
-   {/* {console.log(location)} */}
    <section
     className={`absolute bottom-8 w-full grid place-items-center ${
      location !== "/meeting" ? "hidden" : "block"

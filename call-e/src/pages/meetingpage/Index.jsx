@@ -7,8 +7,20 @@ let Index = () => {
  let { nowSharing, remotePeers } = useCalleContextValues();
 
  const displayScreens = () => {
-  if (remotePeers.length) {
+  if (remotePeers.length && nowSharing === null) {
    return remotePeers.map((peerId) => {
+    return (
+     <VideoScreen
+      key={peerId}
+      local={false}
+      peerId={peerId}
+      sharingUser={nowSharing}
+     />
+    );
+   });
+  } else {
+   let filteredScreen = remotePeers.filter((item) => item === nowSharing);
+   return filteredScreen.map((peerId) => {
     return (
      <VideoScreen
       key={peerId}
@@ -23,8 +35,6 @@ let Index = () => {
 
  return (
   <section className="Container pt-20">
-   {console.log("remote peers", remotePeers)}
-
    <div className="h-5/6 w-full overflow-y-scroll relative">
     <div
      className={`meetingGridBoxMain ${
@@ -36,28 +46,13 @@ let Index = () => {
      } h-full `}
      id="screens-cont"
     >
-     <VideoScreen local={true} peerId={"main"} />
+     <VideoScreen local={true} peerId={"main"} sharingUser={nowSharing} />
 
      {displayScreens()}
     </div>
-    {/* ) : (
-     <div className="meetingGridBoxMain auto-grid-auto h-full">
-      <VideoScreen local={false} peerId={nowSharing} />
-
-      <div className="absolute w-64 bottom-0 left-4">
-       <VideoScreen local={true} peerId={"main"} />
-      </div>
-     </div>
-    )} */}
    </div>
   </section>
  );
 };
 
 export default React.memo(Index);
-
-// remotePeers.length && nowSharing === null
-//  ? remotePeers.map((peerId) => {
-//     return <VideoScreen key={peerId} local={false} peerId={peerId} />;
-//    })
-//  : "";

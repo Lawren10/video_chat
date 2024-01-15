@@ -96,7 +96,6 @@ const Body = () => {
   });
 
   calleSocket.on("new peer joined", (id) => {
-   console.log("new peer joined", id);
    calleSocket.emit("createServerConsumerTransport", id);
   });
   calleSocket.emit(
@@ -108,14 +107,10 @@ const Body = () => {
 
  // join room function
  const joinRoom = () => {
-  console.log("jioning room");
-
   if (roomId === "") {
    setRoomIdError(true);
    return;
   }
-
-  console.log(roomId);
 
   // load the device with server rtpcapabilities
   calleSocket.on("loadRouterRtpCapablities", (serverRouterRtpCapabilities) => {
@@ -161,18 +156,14 @@ const Body = () => {
   });
 
   calleSocket.on("roomId-error", () => {
-   console.log("wrong room id kindly provide the appropriate one");
    setRoomIdError(true);
   });
 
   calleSocket.on("new peer joined", (id) => {
-   console.log("new peer joined", id);
    calleSocket.emit("createServerConsumerTransport", id);
   });
 
   calleSocket.on("get all connected peer", (socketIds) => {
-   console.log("getting all connected peer", socketIds);
-
    socketIds.forEach((peerId) => {
     calleSocket.emit("createServerConsumerTransport", peerId);
    });
@@ -192,8 +183,6 @@ const Body = () => {
 
  return (
   <>
-   {/* {console.log("peer", localPeerCredentials.current.username)} */}
-
    <section className="w-full h-[100%] grid place-items-center">
     {/* container with blured background */}
     <div className="homeBodyInnerBox">

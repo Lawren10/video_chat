@@ -35,12 +35,6 @@ export const shareScreenCaptureStream = async (
   localMediaStream.current = await getMediaStream();
   let localVideo = localMediaStream.current.getVideoTracks()[0];
 
-  console.log("camera video", localVideo);
-  console.log(
-   "local video producer",
-   localStreamProducers.current.localVideoProducer
-  );
-
   await localStreamProducers.current.localVideoProducer.replaceTrack({
    track: localVideo,
   });
@@ -48,14 +42,10 @@ export const shareScreenCaptureStream = async (
   let video = document.getElementById("main");
   video.srcObject = localMediaStream.current;
   updateAftersharingScreen();
+  calleSocket.emit("stopScreenSharing", roomId);
  };
 
  localMediaStream.current.getVideoTracks()[0].enabled = false;
- //  console.log(screenCaptureVideo);
- console.log(
-  "local stream producer",
-  localStreamProducers.current.localVideoProducer
- );
 
  await localStreamProducers.current.localVideoProducer.replaceTrack({
   track: screenCaptureVideo,
@@ -63,16 +53,7 @@ export const shareScreenCaptureStream = async (
 
  setTimeout(() => {
   calleSocket.emit("sharingScreen", roomId);
- }, 10000);
-
- //  localMediaStream.current.getTracks().forEach((track) => {
- //   console.log(track.kind);
- //   if (track.kind === "video") {
- //    let videoTrack = localMediaStream.current.getVideoTracks()[0];
- //    localMediaStream.current.removeTrack(videoTrack);
- //    localMediaStream.current.addTrack(screenCaptureVideo);
- //   }
- //  });
+ }, 1000);
 };
 
 export const loadRouterRtpCapablities = async (
@@ -80,14 +61,9 @@ export const loadRouterRtpCapablities = async (
  localStreamDevice,
  calleSocket
 ) => {
- console.log("server rtpcapabilities:", serverRouterRtpCapabilities);
  await localStreamDevice.current.load({
   routerRtpCapabilities: serverRouterRtpCapabilities,
  });
- console.log(
-  "device rtpcapabilities:",
-  localStreamDevice.current.rtpCapabilities
- );
 
  calleSocket.emit("createServerProducer");
 };
@@ -96,7 +72,6 @@ export const saveRoomId = (localPeerCredentials) => {
  //returning the callback function for handling saving the room id
  return (id) => {
   localPeerCredentials.current["roomId"] = id;
-  console.log("localRoomId: ", localPeerCredentials.current["roomId"]);
  };
 };
 
@@ -109,8 +84,6 @@ export const createProducerTransportandProduce = async (
  params,
  createRoom
 ) => {
- console.log("server transport params", params);
-
  let producerTransport = localStreamDevice.current.createSendTransport(params);
 
  producerTransport.on(
@@ -118,7 +91,6 @@ export const createProducerTransportandProduce = async (
   async ({ dtlsParameters }, callback, errback) => {
    // Signal local DTLS parameters to the server side transport.
    try {
-    console.log("client sending connect parameters");
     await calleSocket.emit("sendTransportConnect", {
      transportId: producerTransport.id,
      dtlsParameters: dtlsParameters,
@@ -134,7 +106,6 @@ export const createProducerTransportandProduce = async (
  );
 
  producerTransport.on("connectionstatechange", (connectionState) => {
-  console.log("connection state", connectionState);
   if (connectionState === "connected") {
    console.log("client connected to server");
    if (createRoom) {
@@ -163,13 +134,6 @@ export const createProducerTransportandProduce = async (
      callback({ id });
     }
    );
-
-   console.log("client produce parameters", {
-    transportId: producerTransport.id,
-    kind: parameters.kind,
-    rtpParameters: parameters.rtpParameters,
-    appData: parameters.appData,
-   });
   } catch (error) {
    // Tell the transport that something was wrong.
    errback(error);
@@ -210,7 +174,7 @@ export const createConsumerTransport = (
  params,
  peerToConnectId
 ) => {
- console.log("creating client consumer transport");
+ //  console.log("creating client consumer transport");
  let consumerTransport = localStreamDevice.current.createRecvTransport(params);
 
  consumerTransport.on(
@@ -269,14 +233,9 @@ export const consumeServerStream = async (
 ) => {
  let consumerTransport =
   remoteStreamConsumers.current[param.peerToConnectId].consumerTransport;
- console.log("serverConsumerVideoParam", param.videoStreamParam);
- console.log("serverConsumerAudioPAram", param.AudioStreamParam);
 
  let videoConsumer = await consumerTransport.consume(param.videoStreamParam);
  let audioConsumer = await consumerTransport.consume(param.AudioStreamParam);
-
- console.log("videoTrack from", param.peerToConnectId, videoConsumer.track);
- console.log("audioTRack from", param.peerToConnectId, audioConsumer.track);
 
  remoteStreamConsumers.current[param.peerToConnectId]["videoConsumer"] =
   videoConsumer;
@@ -286,16 +245,6 @@ export const consumeServerStream = async (
 
  remoteStreamConsumers.current[param.peerToConnectId]["socketUserName"] =
   param.socketUserName;
-
- console.log("socket User Name", param.socketUserName);
-
- // socketUserName;
-
- // remoteStreamConsumers.current[param.peerToConnectId]["controls"] = {
- //  showVideo: true,
- //  showAudio: true,
- //  raiseHand: false,
- // };
 
  calleSocket.emit("resumeConsumerPlayBack", param.peerToConnectId);
 
@@ -307,12 +256,10 @@ export const consumeServerStream = async (
 
  setTimeout(() => {
   if (videoControl === false) {
-   console.log("callng camera state in timeout ");
    calleSocket.emit("cameraState", calleSocket.id, false);
   }
 
   if (audioControl === false) {
-   console.log("callng audio state in timeout ");
    calleSocket.emit("audioState", calleSocket.id, false);
   }
  }, 1000);
@@ -370,33 +317,4 @@ export const updateLocalChats = (element, message, socket, roomId) => {
 
  socket.emit("chatMessage", message.value, roomId);
  message.value = "";
-};
-
-//update screen sharing screen ui function
-
-export const updateScreenSharingUi = (remotePeers) => {
- document
-  .getElementById("main-video-cont")
-  .classList.add("absolute", "w-64", "bottom-0", "left-4", "z-50");
- console.log("main video element", remotePeers);
- remotePeers.forEach((id) => {
-  console.log("id from loop", id);
-  let videoElement = document.getElementById(id);
-  console.log("videoElement", videoElement);
-  if (videoElement.id !== id) {
-   videoElement.classList.add("hidden");
-  }
- });
-
- //  let screenCont = document.getElementById("screens-cont");
-
- //  screenCont.classList.remove("grid-cols-2");
- //  screenCont.classList.add("auto-grid-auto");
-
- //  if (remotePeers.length > 1) {
- //   screenCont.classList.remove("grid-cols-3");
- //   screenCont.classList.add("auto-grid-auto");
- //  }
-
- //  console.log(screenCont);
 };

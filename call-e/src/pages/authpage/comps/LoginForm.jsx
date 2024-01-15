@@ -22,11 +22,7 @@ const LoginForm = () => {
    return;
   }
 
-  console.log("username", name);
-
   localPeerCredentials.current.username = name;
-
-  console.log("peer credental", localPeerCredentials.current);
 
   navigate("/home");
  };
